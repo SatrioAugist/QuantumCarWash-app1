@@ -22,101 +22,132 @@
                 </div>
 
                 @if (in_array(Auth::user()->role, ['kasir']))
-                <a href="{{ route('transactions.create') }}" class="btn btn-outline-success">Tambah Data</a>
+                <a href="{{ route('transactions.create') }}" class="btn btn-outline-success"><i class="mdi mdi-plus"></i>Tambah</a>
                 <br><br>
                 @endif
                 @if (in_array(Auth::user()->role, ['owner']))
                 <form action="{{ route('transactions.pdfFilter') }}" method="GET" style="font-size: 12px;">
                     <div class="form-group" id="dateRangePicker">
-                        <label for="dateRangePicker">Pilih Range Tanggal Unduh PDF:</label>
+                        <label for="dateRangePicker">Pilih Rentang Tanggal Unduh Laporan:</label>
                         <div class="input-daterange input-group">
                             <input type="date" class="input-sm form-control" name="start_date"
                                 style="font-size: 12px;" />
                             <div class="input-group-prepend ">
                                 <span class="input-group-text"
-                                    style="font-size: 12px; background-color: #800080;">Sampai</span>
+                                    style="font-size: 12px; background-color: #4A1CA6;">Sampai</span>
                             </div>
                             <input type="date" class="input-sm form-control" name="end_date" style="font-size: 12px;" />
-                            <button type="submit" class="btn btn-primary"
-                                style=" margin-left: 10px; font-size: 12px;"><i class="mdi mdi-download"></i> Unduh
-                                PDF</button>
+                            <button type="submit" class="btn btn-outline-primary"
+                                style="margin-left: 10px; font-size: 12px;">
+                                <i class="mdi mdi-download"></i>Laporan
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary" onclick="resetDates()"
+                                style="margin-left: 10px;">
+                                <i class="mdi mdi-replay"></i>
+                            </button>
                         </div>
                     </div>
                 </form>
+
+                <script>
+                    function resetDates() {
+                        document.getElementsByName('start_date')[0].value = ''; // Reset nilai start_date
+                        document.getElementsByName('end_date')[0].value = '';   // Reset nilai end_date
+                    }
+                </script>
+
                 @endif
 
                 <div class="table-responsive">
                     <table class="table table-striped table-bordered" id="myTableT">
                         <thead class="table-purple table-light">
                             <tr>
-                                <th style="text-align: center; vertical-align: middle;">No</th>
-                                <th style="text-align: center; vertical-align: middle;">Nomor Unik</th>
-                                <th style="text-align: center; vertical-align: middle;">Nomor Polisi</th>
-                                <th style="text-align: center; vertical-align: middle;">Nama Pelanggan</th>
-                                <th style="text-align: center; vertical-align: middle;">Paket</th>
-                                <th style="text-align: center; vertical-align: middle;">Harga</th>
-                                <th style="text-align: center; vertical-align: middle;">Jumlah</th>
-                                <th style="text-align: center; vertical-align: middle;">Total</th>
-                                <th style="text-align: center; vertical-align: middle;">Bayar</th>
-                                <th style="text-align: center; vertical-align: middle;">Kembali</th>
-                                <th style="text-align: center; vertical-align: middle;">Tanggal</th>
+                                <th style="text-align: center;">No</th>
+                                <th style="text-align: center;">Nomor Unik</th>
+                                <th style="text-align: center;">Nomor Polisi</th>
+                                <th style="text-align: center;">Nama Pelanggan</th>
+                                <th style="text-align: center;">Paket</th>
+                                <th style="text-align: center;">Total</th>
+                                <th style="text-align: center;">Bayar</th>
+                                <th style="text-align: center;">Kembali</th>
+                                <th style="text-align: center;">Tanggal</th>
                                 @if (in_array(Auth::user()->role, ['kasir','admin']))
-                                <th style="text-align: center; vertical-align: middle;">Aksi</th>
+                                <th style="text-align: center;">Aksi</th>
                                 @endif
                             </tr>
                             <thead>
                             <tbody>
                                 @foreach ($tM as $key => $trans)
                                 <tr>
-                                    <td style="text-align: center; vertical-align: middle;">{{ (int) $key + 1 }}</td>
-                                    <td style="text-align: center; vertical-align: middle;">{{ $trans->nomor_unik }}
+                                    <td style="text-align: center;">{{ (int) $key + 1 }}</td>
+                                    <td style="text-align: center;">{{ $trans->nomor_unik }}
                                     </td>
-                                    <td style="text-align: center; vertical-align: middle;">{{ $trans->nomor_polisi }}
+                                    <td style="text-align: center;">{{ $trans->nomor_polisi }}
                                     </td>
-                                    <td style="text-align: center; vertical-align: middle;">{{ $trans->nama_pelanggan }}
+                                    <td style="text-align: center;">{{ $trans->nama_pelanggan }}
                                     </td>
-                                    <td style="text-align: center; vertical-align: middle;">{{ $trans->nama_produk }}
+                                    <td style="text-align: center;">
+                                        <ul class="list-item">
+                                            @php
+                                            $counter = 1; // variabel untuk nomor urut
+                                            @endphp
+                                            @foreach ($trans->id_produk as $produk)
+                                            @php
+                                            $produkName = \App\Models\PaketM::find($produk['id']);
+                                            @endphp
+
+                                            @if(isset($produkName))
+                                            @php
+                                            $totalProduk = $produkName->harga_produk * $produk['qty'];
+                                            @endphp
+                                            <li>{{ $counter }}. {{ $produkName->nama_produk }} - {{ $produk['qty'] }} x
+                                                <br> Rp. {{ number_format($totalProduk, 0, ',', '.') }}
+                                            </li>
+                                            @php
+                                            $counter++; // increment nomor urut
+                                            @endphp
+                                            @endif
+                                            @endforeach
+                                        </ul>
                                     </td>
-                                    <td style="text-align: center; vertical-align: middle;">Rp {{
-                                        number_format($trans->harga_produk, 0, ',', '.') }}
+
+                                    <td style="text-align: center;">Rp {{
+                                        number_format($trans->total_harga, 0, ',', '.')}}
                                     </td>
-                                    <td style="text-align: center; vertical-align: middle;">{{ $trans->qty }}
-                                    </td>
-                                    <td style="text-align: center; vertical-align: middle;">Rp {{
-                                        number_format($trans->total, 0, ',', '.')}}
-                                    </td>
-                                    <td style="text-align: center; vertical-align: middle;">Rp {{
+                                    <td style="text-align: center;">Rp {{
                                         number_format($trans->uang_bayar, 0, ',', '.') }}
                                     </td>
-                                    <td style="text-align: center; vertical-align: middle;">Rp {{
+                                    <td style="text-align: center;">Rp {{
                                         number_format($trans->uang_kembali, 0, ',', '.') }}
                                     </td>
-                                    <td style="text-align: center; vertical-align: middle;">{{ $trans->tanggal }}
+                                    <td style="text-align: center;">{{ $trans->created_at }}
                                     </td>
                                     @if (in_array(Auth::user()->role, ['kasir','admin']))
-                                    <td style="text-align: center; vertical-align: middle;">
-                                    @endif
-                                    @if (in_array(Auth::user()->role, ['kasir']))
-                                    <a href="{{ url('transactions/struk', $trans->id_trans) }}"
-                                        class="btn btn-outline-primary btn-xs"
-                                        style="border-radius: 10px; margin-right: 5px;">
-                                        <i class="mdi mdi-cloud-print"></i>
-                                    </a>
-                                    @endif
-                                    @if (in_array(Auth::user()->role, ['admin']))
+                                    <td style="text-align: center;">
+                                        @endif
+                                        @if (in_array(Auth::user()->role, ['kasir']))
+                                        <a href="{{ url('transactions/struk', $trans->id) }}"
+                                            class="btn btn-outline-primary btn-xs" title="unduh"
+                                            style="border-radius: 10px; margin-right: 5px;">
+                                            <i class="mdi mdi-cloud-print"></i>
+                                        </a>
+                                        @endif
+                                        @if (in_array(Auth::user()->role, ['']))
                                         <div class="btn-group">
-                                            <a href="{{ route('transactions.edit',$trans->id_trans)}}"
-                                                class="btn btn-outline-warning btn-xs"
-                                                style="border-radius: 10px; margin-right: 5px;">
-                                                <i class="mdi mdi-pencil"></i>
-                                            </a>
-                                            
-                                            <form action="{{ route('transactions.destroy', $trans->id_trans) }}"
-                                                method="POST" style="display: inline;">
+                                            <a href="{{ route('transactions.edit',$trans->id)}}"
+                                            class="btn btn-outline-warning btn-xs"
+                                            style="border-radius: 10px; margin-right: 5px;">
+                                            <i class="mdi mdi-pencil"></i>
+                                        </a>
+                                        @endif
+                                        @if (in_array(Auth::user()->role, ['admin']))
+
+                                            <form action="{{ route('transactions.destroy', $trans->id) }}" method="POST"
+                                                style="display: inline;">
                                                 @csrf
                                                 @method('delete')
                                                 <button type="submit" class="btn btn-outline-danger btn-xs"
-                                                    style="border-radius: 10px; margin-left: 5px;"
+                                                    title="Hapus" style="border-radius: 10px; margin-left: 5px;"
                                                     onclick="return confirm('Konfirmasi Hapus Data !?')">
                                                     <i class="mdi mdi-delete-forever"></i>
                                                 </button>
@@ -136,7 +167,7 @@
 <style>
     /* Warna latar belakang dan teks untuk header tabel */
     .table-purple th {
-        background-color: #800080;
+        background-color: #4A1CA6;
         /* Warna ungu */
         color: #ffffff;
         /* Warna teks putih */

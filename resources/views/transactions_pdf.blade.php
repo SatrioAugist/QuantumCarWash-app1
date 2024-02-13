@@ -34,7 +34,7 @@
         td {
             border: 1px solid #dddddd;
             text-align: center;
-            padding: 12px;
+            padding: 5px;
         }
 
         th {
@@ -62,7 +62,6 @@
             margin-top: 70px;
             text-align: right;
         }
-        
     </style>
 </head>
 
@@ -70,7 +69,7 @@
     <header>
         <h1>Laporan Transaksi</h1>
         <div class="hp">
-            <p>Tanggal:  {{ date('Y-m-d') }}</p>
+            <p>Tanggal: {{ date('Y-m-d') }}</p>
         </div>
     </header>
 
@@ -81,39 +80,52 @@
                 <th>Nomor Unik</th>
                 <th>Nomor Polisi</th>
                 <th>Nama Pelanggan</th>
-                <th>Paket</th>
-                <th>Harga</th>
-                <th>Jumlah</th>
+                <th>Paketan</th>
                 <th>Total</th>
                 <th>Tanggal</th>
             </tr>
         </thead>
         <tbody>
             @php
-                $totalPendapatan = 0;
+            $totalPendapatan = 0;
             @endphp
             @foreach ($tM as $key => $trans)
-                <tr>
-                    <td>{{ (int) $key + 1 }}</td>
-                    <td>{{ $trans->nomor_unik }}</td>
-                    <td>{{ $trans->nomor_polisi }}</td>
-                    <td>{{ $trans->nama_pelanggan }}</td>
-                    <td>{{ $trans->nama_produk }}</td>
-                    <td>Rp {{ number_format($trans->harga_produk, 0, ',', '.') }}</td>
-                    <td>{{ $trans->qty }}</td>
-                    <td>Rp {{ number_format($trans->total, 0, ',', '.') }}</td>
-                    <td>{{ $trans->created_at }}</td>
-                </tr>
-                @php
-                    $totalPendapatan += $trans->total;
-                @endphp
+            <tr>
+                <td style="text-align: center;">{{ (int) $key + 1 }}</td>
+                <td style="text-align: center;">{{ $trans->nomor_unik }}</td>
+                <td style="text-align: center;">{{ $trans->nomor_polisi }}</td>
+                <td style="text-align: center;">{{ $trans->nama_pelanggan }}</td>
+                <td>
+                      
+                            @if(isset($trans->id_produk) && is_array($trans->id_produk))
+                                @php $counter = 1; @endphp
+                                @foreach ($trans->id_produk as $produk)
+                                    @php
+                                        $produkName = \App\Models\PaketM::find($produk['paket']);
+                                    @endphp
+
+                                    @if(isset($produkName))
+                                        <p>{{ $counter }}. {{ $produkName->nama_produk }} - {{ $produk['qty'] }} x <br> Rp. {{ number_format($produk['total_harga'], 0, ',', '.') }}</p>
+                                        @php
+                                            $counter++;
+                                        @endphp
+                                    @endif
+                                @endforeach
+                            @endif
+                     
+                    </td>
+                <td style="text-align: center;">Rp {{ number_format($trans->total_harga, 0, ',', '.') }}</td>
+                <td style="text-align: center;">{{ $trans->created_at }}</td>
+            </tr>
+            @php
+            $totalPendapatan += $trans->total_harga;
+            @endphp
             @endforeach
         </tbody>
     </table>
 
     <div class="summary">
         <h2>Ringkasan</h2>
-        <p>Total Transaksi: {{ \App\Models\TransM::count() }}</p>
         <p>Total Pendapatan: Rp {{ number_format($totalPendapatan, 0, ',', '.') }} </p>
     </div>
 

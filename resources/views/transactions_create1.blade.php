@@ -52,25 +52,14 @@
         <select name="id_produk[]" required id="id_produk" class="form-control">
           <option selected>Pilih Produk</option>
           @foreach ($pM as $p)
-          @php
-          $isSelected = false;
-          foreach ($tM->id_produk as $transactionProduct) {
-          if ($transactionProduct['id'] == $p->id) {
-          $isSelected = true;
-          break;
-          }
-          }
-          @endphp
-
-          <option value="{{ $p->id }}" data-harga="{{ $p->harga_produk }}" {{ $isSelected ? 'selected' : '' }}>
-            {{ $p->nama_produk }}
-          </option>
-
+            @php
+              $selectedProdukId = !is_null($tM) && !is_null($tM->produk) && in_array($p->id, array_column($tM->produk, 'produkId')) ? 'selected' : '';
+            @endphp
+            <option value="{{ $p->id }}" data-harga="{{ $p->harga_produk }}" {{ $selectedProdukId }}>{{ $p->nama_produk }}</option>
           @endforeach
         </select>
         <input type="hidden" id="selectedProdukId" name="selectedProdukId" value="">
-        <button type="button" class="btn btn-outline-primary m-1" onclick="addRow()"><i
-            class="mdi mdi-plus"></i></button>
+        <button type="button" class="btn btn-outline-primary m-1" onclick="addRow()"><i class="mdi mdi-plus"></i></button>
       </div>
 
       <div class="table-responsive">
@@ -86,25 +75,21 @@
             </tr>
           </thead>
           <tbody id="tableBody">
-
-            @foreach ($tM->id_produk as $existingProduk)
-            @php
-            $pM = \App\Models\PaketM::find($existingProduk['id']);
-            @endphp
-            <tr>
-              <td>{{ $loop->iteration }}</td>
-              <td>{{ $pM->nama_produk }}</td>
-              <td>Rp. <span class="harga" data-harga="{{ $pM->harga_produk }}">{{ $pM->harga_produk }}</span></td>
-              <td>
-                <input type="number" class="form-control qtyInput" name="qty[]" value="{{ $existingProduk['qty'] }}"
-                  min="1">
-                <input type="hidden" name="id[]" value="{{ $existingProduk['id'] }}">
-              </td>
-              <td class="totalRow">Rp. {{ $existingProduk['total_harga'] }}</td>
-              <td><button type="button" class="btn btn-outline-danger m-1" onclick="removeRow(this)"><i
-                    class="ti ti-trash"></i></button></td>
-            </tr>
-            @endforeach
+            @if (!is_null($tM->id_produk) && is_array($tM->id_produk))
+              @foreach ($tM->id_produk as $existingProduk)
+                <tr>
+                  <td>{{ $loop->iteration }}</td>
+                  <td>{{ $existingProduk['nama_produk'] }}</td>
+                  <td>Rp. <span class="harga" data-harga="{{ $existingProduk['total_harga'] }}">{{ $existingProduk['total_harga'] }}</span></td>
+                  <td>
+                    <input type="number" class="form-control qtyInput" name="qty[]" value="{{ $existingProduk['qty'] }}" min="1">
+                    <input type="hidden" name="id_produk[]" value="{{ $existingProduk['id'] }}">
+                  </td>
+                  <td class="totalRow">Rp. {{ $existingProduk['total_harga'] }}</td>
+                  <td><button type="button" class="btn btn-outline-danger m-1" onclick="removeRow(this)"><i class="mdi mdi-delete"></i></button></td>
+                </tr>
+              @endforeach
+            @endif
           </tbody>
         </table>
       </div>
@@ -112,19 +97,17 @@
       <div class="form-group">
         <div class="form-group">
           <label for="total_harga" class="form-label">Total Bayar</label>
-          <input type="number" class="form-control" id="total_harga" name="total_harga" value="{{ $tM->total_harga }}"
-            readonly>
+          <input type="number" class="form-control" id="total_harga" name="total_harga" value="{{ $tM->total_harga }}" readonly>
         </div>
 
         <label for="">Uang Bayar</label>
         <input name="uang_bayar" type="number" class="form-control" value="{{ $tM->uang_bayar }}" required>
         @error('uang_bayar')
-        <p>{{ $message }}</p>
+          <p>{{ $message }}</p>
         @enderror
       </div>
 
-      <button type="submit" class="btn btn-warning" style="margin-left: 3px;"
-        onclick="return confirm('Konfirmasi Edit Transaksi !?')">
+      <button type="submit" class="btn btn-warning" style="margin-left: 3px;" onclick="return confirm('Konfirmasi Edit Transaksi !?')">
         Simpan
       </button>
     </form>
@@ -177,7 +160,7 @@
                 <td>Rp. <span class="harga" data-harga="${produkHarga}">${produkHarga}</span></td>
                 <td>
                     <input type="number" class="form-control qtyInput" name="qty[]" value="${qty}" min="1">
-                    <input type="hidden" name="id[]" value="${produkId}">
+                    <input type="hidden" name="produkId[]" value="${produkId}">
                 </td>
                 <td class="totalRow">Rp. ${total}</td>
                 <td><button type="button" class="btn btn-outline-danger m-1" onclick="removeRow(this)"><i class="mdi mdi-delete"></i></button></td>
@@ -221,5 +204,6 @@
 
 </script>
 
-
+<!-- /.card -->
+<!-- /.content -->
 @endsection

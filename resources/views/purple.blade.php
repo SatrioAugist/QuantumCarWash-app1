@@ -9,7 +9,15 @@
   <!-- plugins:css -->
   <link rel="stylesheet" href="{{asset('vendors/mdi/css/materialdesignicons.min.css')}}">
   <link rel="stylesheet" href="{{asset ('vendors/css/vendor.bundle.base.css')}}">
-
+  <style>
+        /* Your existing styles here */
+        .navbar-time {
+            display: flex;
+            align-items: center;
+            color: #000;
+            padding-right: 20px;
+        }
+    </style>
 
   <!-- datatable -->
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -43,6 +51,45 @@
         <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
           <span class="mdi mdi-menu"></span>
         </button>
+       <div class="navbar-time">
+       <script>
+    function updateTime() {
+        var now = new Date();
+        var hours = now.getHours().toString().padStart(2, '0');
+        var minutes = now.getMinutes().toString().padStart(2, '0');
+        var seconds = now.getSeconds().toString().padStart(2, '0');
+        var day = now.getDate().toString().padStart(2, '0');
+
+        // Array untuk menyimpan nama bulan
+        var monthNames = [
+            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+        ];
+
+        // Array untuk menyimpan nama hari dalam bahasa Indonesia
+        var dayNames = [
+            "Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"
+        ];
+
+        var month = monthNames[now.getMonth()];
+        var dayOfWeek = dayNames[now.getDay()];
+        var year = now.getFullYear();
+
+        var timeString = hours + ':' + minutes + ':' + seconds + ' /  ';
+        var dateString = dayOfWeek + ', ' + day + ' ' + month + ' ' + year;
+
+        document.getElementById('current-time').innerText = timeString + ' ' + dateString;
+    }
+
+    setInterval(updateTime, 1000); // Update every second
+    updateTime(); // Initial update
+</script>
+
+
+
+    <span id="current-time"></span>
+</div>
+
 
         <ul class="navbar-nav navbar-nav-right">
           <li class="nav-item nav-profile dropdown">
@@ -60,13 +107,13 @@
               @endif
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="#" class="nav-link" id="logout-button" onclick="confirmLogout()">
-                <i class="mdi mdi-logout me-2 text-primary"></i> Signout </a>
+                <i class="mdi mdi-logout me-2 text-primary"></i> Keluar </a>
             </div>
           </li>
 
           <script>
             function confirmLogout() {
-              var confirmation = confirm('Are you sure you want to log out?');
+              var confirmation = confirm('Apakah yakin ingin Keluar?');
               if (confirmation) {
                 // Redirect to the logout URL only if the user confirms.
                 window.location.href = "{{ url('logout') }}";
@@ -94,11 +141,22 @@
         <ul class="nav">
           <li class="nav-item nav-profile">
             <a href="#" class="nav-link">
-              <div class="nav-profile-image">
-                <img src="{{asset('images/faces/face1.jpg')}}" alt="profile">
-                <span class="login-status online"></span>
-                <!--change to offline or busy as needed-->
-              </div>
+            <div class="nav-profile-image">
+  @php
+    $role = Auth::user()->role;
+    $profileImage = asset('images/profiles/default.jpg'); // Gambar profil default jika tidak ada yang sesuai
+    if ($role == 'admin') {
+        $profileImage = asset('images/profiles/admin.jpg');
+    } elseif ($role == 'kasir') {
+        $profileImage = asset('images/profiles/kasir.jpg');
+    } elseif ($role == 'owner') {
+        $profileImage = asset('images/profiles/owner.jpg');
+    }
+  @endphp
+  <img src="{{ $profileImage }}" alt="profile">
+  <span class="login-status online"></span>
+  <!--change to offline or busy as needed-->
+</div>
               <div class="nav-profile-text d-flex flex-column">
                 <span class="font-weight-bold mb-2">{{ Auth::user()->nama}}</span>
                 <span class="text-secondary text-small">{{ Auth::user()->role}}</span>
@@ -112,7 +170,7 @@
             </a>
           </li>
 
-          @if (in_array(Auth::user()->role, ['admin']))
+          @if (in_array(Auth::user()->role, ['admin','kasir','owner']))
           <li class="nav-item">
             <a class="nav-link" href="{{ url('paket') }}">
               <span class="menu-title">Paket</span>

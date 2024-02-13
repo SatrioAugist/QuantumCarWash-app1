@@ -1,15 +1,32 @@
 @extends('purple')
 @section('content')
 
-<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Quantum Car Wash</h1>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
 
 <!-- Main content -->
 <section class="content">
     <!-- Default box -->
-    <div class="card-body">
-        <h4 class="card-title">Aktivitas</h4>
-        <br><br>
-        <form action="{{ route('log.filter') }}" method="GET" class="mb-4">
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">Aktitas</h4>
+        </div>
+  
+        
+
+        <div class="card-body">
+
+            @if($message = Session::get('success'))
+            <div class="alert alert-success">{{ $message }}</div>
+            @endif
+            <form action="{{ route('log.filter') }}" method="GET" class="mb-4">
             <div class="row">
                 <div class="col-md-4">
                     <label for="start_date">Dari Tanggal</label>
@@ -21,14 +38,10 @@
                 </div>
                 <div class="col-md-4 mt-4">
                     <button type="submit" class="btn btn-primary">Filter</button>
+                    <a href="{{ route('log.index') }}" class="btn btn-danger">Reset</a>
                 </div>
             </div>
         </form>
-
-        <div class="card-body">
-            @if($message = Session::get('success'))
-            <div class="alert alert-success">{{ $message }}</div>
-            @endif
             <div class="table-responsive"> 
                 <table class="table table-striped table-bordered" id="myTable">
                     <thead class="table-purple">
@@ -93,7 +106,7 @@
     }
     /* Warna latar belakang dan teks untuk header tabel */
     .table-purple th {
-        background-color: #800080; /* Warna ungu */
+        background-color: #4A1CA6; /* Warna ungu */
         color: #ffffff; /* Warna teks putih */
     }
 

@@ -15,7 +15,7 @@ class DashboardC extends Controller
         'id_user' => Auth::user()-> id,
         'activity' => "User Di Halaman Dashboard"
     ]);
-    $totalPenjualan = TransM::sum('total');
+    $totalPenjualan = TransM::sum('total_harga');
 
     return view('dashboard', ['totalPenjualan' => $totalPenjualan]);
 }   

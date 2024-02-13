@@ -18,7 +18,7 @@
     <!-- Default box -->
     <div class="card">
       <div class="card-header">
-        <h3 class="card-title">Ganti Kata Sandi Pengguna</h3>
+        <h3 class="card-title">Ubah Password Pengguna</h3>
       </div>
       <div class="card-body">
       <a href="{{ route('transactions.index') }}" class="btn btn-secondary">Kembali</a>

@@ -18,9 +18,13 @@ class TransM extends Model
         'nomor_unik',
         'nomor_polisi',
         'qty',
-        'total',
+        'total_harga',
         'uang_bayar',
         'uang_kembali',
         'created_at',
+    ];
+
+    protected $casts = [
+        'id_produk' => 'json'
     ];
 }

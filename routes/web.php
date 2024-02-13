@@ -32,7 +32,7 @@ Route::get('dashboard', [DashboardC::class, 'dashboard'])->middleware('userAkses
 
 
 //PAKET
-Route::get('paket', [PaketC::class, 'index'])->name('paket.index')->middleware('userAkses:admin');
+Route::get('paket', [PaketC::class, 'index'])->name('paket.index')->middleware('userAkses:admin,kasir,owner');
 Route::get('paket/create', [PaketC::class, 'create'])->name('paket.create')->middleware('userAkses:admin');
 Route::post('paket/store', [PaketC::class, 'store'])->name('paket.store')->middleware('userAkses:admin');
 Route::get('paket/edit/{id}', [PaketC::class, 'edit'])->name('paket.edit')->middleware('userAkses:admin');
@@ -56,7 +56,7 @@ Route::get('/transactions/pdfFilter', [TransC::class, 'pdfFilter'])->name('trans
 
 
 //USER 
-    Route::get('users/pdf', [UsersR::class, 'pdf'])->name('users.pdf')->middleware('userAkses:admin');
+Route::get('users/pdf', [UsersR::class, 'pdf'])->name('users.pdf')->middleware('userAkses:admin');
 Route::resource('users', UsersR::class)->middleware('userAkses:admin');
 Route::get('users/changepassword/{id}', [UsersR::class, 'changepassword'])->name('users.changepassword')->middleware('userAkses:admin');
 Route::put('users/change/{id}', [UsersR::class, 'change'])->name('users.change')->middleware('userAkses:admin');

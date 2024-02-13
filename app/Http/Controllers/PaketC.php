@@ -19,13 +19,17 @@ class PaketC extends Controller
     public function index()
     {
         $LogM = LogM::create([
-            'id_user' => Auth::user()-> id,
+            'id_user' => Auth::user()->id,
             'activity' => "User Di Halaman Paket"
         ]);
+    
         $sub = "Daftar Paket";
-        $pM = PaketM::all();
-        return view('paket', compact('pM','sub'));
+    
+        $pM = PaketM::orderBy('created_at', 'asc')->get();
+    
+        return view('paket', compact('pM', 'sub'));
     }
+    
     
     public function pdf()
     {

@@ -23,8 +23,8 @@
     <!-- Success message content -->
         </div>
 
-            <a href="{{ route('users.create') }}" class="btn btn-outline-success">Tambah Data</a>
-            <a href="{{ route('users.pdf') }}" class="btn btn-outline-success">Unduh</a>
+            <a href="{{ route('users.create') }}" class="btn btn-outline-success"><i class="mdi mdi-plus"></i>Tambah</a>
+            <a href="{{ route('users.pdf') }}" class="btn btn-outline-success"><i class="mdi mdi-download"></i>Laporan</a>
             <br>
             <br>
 
@@ -48,20 +48,20 @@
                                 <td style="text-align: center; vertical-align: middle;">{{ $users->role }}</td>
                                 <td style="text-align: center; vertical-align: middle;">
                                     <div class="btn-group">
-                                        <a href="{{ route('users.edit', $users->id)}}"
+                                        <a title="Edit" href="{{ route('users.edit', $users->id)}}"
                                             class="btn btn-outline-warning btn-xs"
                                             style="border-radius: 10px; margin-right: 5px;">
                                             <i class="mdi mdi-pencil"></i>
                                         </a>
                                     <div class="btn-group">
-                                        <a href="{{ route('users.changepassword', $users->id)}}"
+                                        <a title="Ganti Sandi" href="{{ route('users.changepassword', $users->id)}}"
                                             class="btn btn-outline-info btn-xs"
                                             style="border-radius: 10px; margin-right: 5px;">
                                             <i class="mdi mdi-pencil"></i>
                                         </a>
 
                                         <form action="{{ route('users.destroy', $users->id)}}" method="POST"
-                                            style="display: inline;">
+                                            title="Hapus" style="display: inline;">
                                             @csrf
                                             @method('delete')
                                             <button type="submit" class="btn btn-outline-danger btn-xs"
@@ -84,7 +84,7 @@
 
     /* Warna latar belakang dan teks untuk header tabel */
     .table-purple th {
-        background-color: #800080; /* Warna ungu */
+        background-color: #4A1CA6; /* Warna ungu */
         color: #ffffff; /* Warna teks putih */
     }
 
@@ -108,6 +108,9 @@
         // Display the success message
         $(document).ready(function(){
             $("#success-message").html("{{ $message }}").fadeIn(1).delay(3000).fadeOut(); // 3000 milliseconds (3 seconds)
+            @if(Session::has('success'))
+        {{ Session::forget('success') }}
+    @endif
         });
     </script>
 @endif

@@ -16,9 +16,9 @@ class LogC extends Controller
             'activity' => "User Di Halaman Activity"
         ]);
         $subtitle = "Daftar Activity";
-        $LogM = LogM::select('users.nama', 'users.role', 'log.*')
+        $LogM = LogM::select('users.nama', 'users.role', 'log.*','log.created_at as jam')
             ->join('users', 'users.id', '=', 'log.id_user')
-            ->orderBy('log.created_at', 'desc') // Order by created_at in descending order
+            ->orderBy('jam', 'desc') // Order by created_at in descending order
             ->get();
 
         return view('log', compact('subtitle', 'LogM'));

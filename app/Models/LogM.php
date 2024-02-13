@@ -15,7 +15,7 @@ class LogM extends Model
 
     public function getActivityLogOptions(): LogOptions
     {
-        return LogOptions::defaults()-> LogOnly(['id_user', 'activity']);
+        return LogOptions::defaults()-> LogOnly(['id_user', 'activity','created_at']);
     }
 
  }  

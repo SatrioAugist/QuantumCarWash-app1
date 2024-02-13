@@ -12,7 +12,6 @@
     <!-- Plugin css for this page -->
     <!-- End plugin css for this page -->
     <!-- inject:css -->
-
     <!-- endinject -->
     <!-- Layout styles -->
     <link rel="stylesheet" href="{{asset('css/style.css')}}">
@@ -24,35 +23,33 @@
         <div class="content-wrapper d-flex align-items-center auth">
           <div class="row flex-grow">
             <div class="col-lg-4 mx-auto">
-              <div class="auth-form-light text-left p-5">
+              <div class="auth-form-light text-center p-5">
                 <div class="brand-logo">
                   <img src="/images/logo_qcw.png">
                 </div>
                 @if(session('success'))
-            <p class="alert alert-success">{{ session('success') }}</p>
-            @endif
-            @if($errors->any())
-            @foreach($errors->all() as $err)
-            <p class="alert alert-danger">{{ $err }}</p>
-            @endforeach
-            @endif
-                <h4>Hai,Selamat Datang!</h4>
-                <h6 class="font-weight-light">Silahkan Login Terlebih Dahulu</h6>
-               
+                  <p class="alert alert-success">{{ session('success') }}</p>
+                @endif
+                @if($errors->any())
+                  @foreach($errors->all() as $err)
+                    <p class="alert alert-danger">{{ $err }}</p>
+                  @endforeach
+                @endif
+                <div class="text-left"> <!-- Tambahkan class text-left untuk membuat teks berada di sebelah kiri -->
+                  <h4 >Hai, Selamat Datang!</h4>
+                  <h6 class="font-weight-light">Silahkan Login Terlebih Dahulu</h6>
+                </div>
                 <form class="pt-3" action="{{route('login.action')}}" method="post">
-                @csrf
+                  @csrf
                   <div class="form-group">
-                  <input name="username" value="{{old('username')}}" type="text" class="form-control"
-                    placeholder="Username">
+                    <input name="username" value="{{old('username')}}" type="text" class="form-control" placeholder="Username">
                   </div>
                   <div class="form-group">
-                  <input name="password" type="password" class="form-control" placeholder="Password">
+                    <input name="password" type="password" class="form-control" placeholder="Password">
                   </div>
                   <div class="mt-3">
-                    <button type="submit" class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn" >SIGN IN</button>
+                    <button type="submit" class="btn btn-block btn-gradient-primary btn-lg font-weight-medium auth-form-btn">Masuk</button>
                   </div>
-              
-                
                 </form>
               </div>
             </div>
