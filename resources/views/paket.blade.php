@@ -17,12 +17,13 @@
         </div>
         <div class="card-body">
             <div id="success-message" class="alert alert-success" style="display: none;">
-                <!-- Success message content -->
+                <!-- Konten pesan keberhasilan -->
             </div>
 
             @if (in_array(Auth::user()->role, ['admin']))
             <a href="{{ route('paket.create') }}" class="btn btn-outline-success"><i class="mdi mdi-plus"></i>Tambah</a>
-            <a href="{{ route('paket.pdf') }}" class="btn btn-outline-success"><i class="mdi mdi-download"></i>Laporan</a>
+            <a href="{{ route('paket.pdf') }}" class="btn btn-outline-success"><i
+                    class="mdi mdi-download"></i>Laporan</a>
             <br>
             <br>
             @endif
@@ -56,14 +57,13 @@
                                             <i class="mdi mdi-pencil"></i>
                                         </a>
 
-                                        <form action="{{ route('paket.destroy', $paket->id)}}" method="POST"
+                                        <form id="form-delete-{{$paket->id}}" action="{{ route('paket.destroy', $paket->id)}}" method="POST"
                                             style="display: inline;">
                                             @csrf
                                             @method('delete')
-                                            <button type="submit" class="btn btn-outline-danger btn-xs"
-                                                style="border-radius: 10px; margin-left: 5px;"
-                                                title="Hapus"
-                                                onclick="return confirm('Konfirmasi Hapus Data !?')">
+                                            <button type="button" class="btn btn-outline-danger btn-xs"
+                                                style="border-radius: 10px; margin-left: 5px;" title="Hapus"
+                                                onclick="confirmDelete('form-delete-{{$paket->id}}')">
                                                 <i class="mdi mdi-delete-forever"></i>
                                             </button>
                                         </form>
@@ -103,19 +103,41 @@
         /* Warna teks hitam */
     }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script type="text/javascript">
     let table = new DataTable('#myTable');
+
+    // SweetAlert for confirmation before delete
+    function confirmDelete(id) {
+        Swal.fire({
+            title: 'Konfirmasi Dulu!',
+            text: 'Apakah Anda yakin ingin menghapus paket?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Hapus',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Submit the form when user confirms
+                $('#' + id).submit();
+            }
+        });
+    }
 </script>
 
 @if($message = Session::get('success'))
 <script>
-    // Display the success message
     $(document).ready(function () {
-        $("#success-message").html("{{ $message }}").fadeIn().delay(3000).fadeOut(); // 3000 milliseconds (3 seconds)
-        @if (Session:: has('success'))
-    { { Session:: forget('success') } }
-    @endif
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: "{{ $message }}",
+            showConfirmButton: false,
+            timer: 2000
         });
+    });
 </script>
 @endif
 @endsection

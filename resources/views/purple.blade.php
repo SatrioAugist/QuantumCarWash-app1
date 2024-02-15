@@ -106,22 +106,35 @@
                 <i class="mdi mdi-cached me-2 text-success"></i> Activity Log </a>
               @endif
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#" class="nav-link" id="logout-button" onclick="confirmLogout()">
-                <i class="mdi mdi-logout me-2 text-primary"></i> Keluar </a>
-            </div>
-          </li>
+<a class="dropdown-item" href="#" class="nav-link" id="logout-button" onclick="confirmLogout()">
+    <i class="mdi mdi-logout me-2 text-primary"></i> Keluar
+</a>
+</div>
+</li>
 
-          <script>
-            function confirmLogout() {
-              var confirmation = confirm('Apakah yakin ingin Keluar?');
-              if (confirmation) {
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function confirmLogout() {
+        Swal.fire({
+            title: 'Konfirmasi Dulu!',
+            text: 'Apakah Anda yakin ingin keluar?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
                 // Redirect to the logout URL only if the user confirms.
                 window.location.href = "{{ url('logout') }}";
-              } else {
+            } else {
                 // If the user cancels the logout, do nothing.
-              }
             }
-          </script>
+        });
+    }
+</script>
+
           <li class="nav-item d-none d-lg-block full-screen-link">
             <a class="nav-link">
               <i class="mdi mdi-fullscreen" id="fullscreen-button"></i>

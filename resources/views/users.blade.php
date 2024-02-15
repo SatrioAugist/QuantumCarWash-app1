@@ -19,9 +19,9 @@
             <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
         </div>
         <div class="card-body">
-        <div id="success-message" class="alert alert-success" style="display: none;">
-    <!-- Success message content -->
-        </div>
+            <div id="success-message" class="alert alert-success" style="display: none;">
+                <!-- Konten pesan keberhasilan -->
+            </div>
 
             <a href="{{ route('users.create') }}" class="btn btn-outline-success"><i class="mdi mdi-plus"></i>Tambah</a>
             <a href="{{ route('users.pdf') }}" class="btn btn-outline-success"><i class="mdi mdi-download"></i>Laporan</a>
@@ -53,23 +53,25 @@
                                             style="border-radius: 10px; margin-right: 5px;">
                                             <i class="mdi mdi-pencil"></i>
                                         </a>
-                                    <div class="btn-group">
-                                        <a title="Ganti Sandi" href="{{ route('users.changepassword', $users->id)}}"
-                                            class="btn btn-outline-info btn-xs"
-                                            style="border-radius: 10px; margin-right: 5px;">
-                                            <i class="mdi mdi-pencil"></i>
-                                        </a>
+                                        <div class="btn-group">
+                                            <a title="Ganti Sandi" href="{{ route('users.changepassword', $users->id)}}"
+                                                class="btn btn-outline-info btn-xs"
+                                                style="border-radius: 10px; margin-right: 5px;">
+                                                <i class="mdi mdi-pencil"></i>
+                                            </a>
 
-                                        <form action="{{ route('users.destroy', $users->id)}}" method="POST"
-                                            title="Hapus" style="display: inline;">
-                                            @csrf
-                                            @method('delete')
-                                            <button type="submit" class="btn btn-outline-danger btn-xs"
-                                                style="border-radius: 10px; margin-left: 5px;"
-                                                onclick="return confirm('Konfirmasi Hapus Data !?')">
-                                                <i class="mdi mdi-delete-forever"></i>
-                                            </button>
-                                        </form>
+                                            <form id="form-delete-{{$users->id}}"
+                                                action="{{ route('users.destroy', $users->id)}}" method="POST"
+                                                title="Hapus" style="display: inline;">
+                                                @csrf
+                                                @method('delete')
+                                                <button type="button" class="btn btn-outline-danger btn-xs"
+                                                    style="border-radius: 10px; margin-left: 5px;"
+                                                    onclick="confirmDelete('form-delete-{{$users->id}}')">
+                                                    <i class="mdi mdi-delete-forever"></i>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -100,18 +102,41 @@
         color: #000000; /* Warna teks hitam */
     }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script type="text/javascript">
     let table = new DataTable('#myTable');
-</script>
-@if($message = Session::get('success'))
-    <script>
-        // Display the success message
-        $(document).ready(function(){
-            $("#success-message").html("{{ $message }}").fadeIn(1).delay(3000).fadeOut(); // 3000 milliseconds (3 seconds)
-            @if(Session::has('success'))
-        {{ Session::forget('success') }}
-    @endif
+
+    // SweetAlert for confirmation before delete
+    function confirmDelete(id) {
+        Swal.fire({
+            title: 'Konfirmasi Dulu!',
+            text: 'Apakah Anda yakin ingin menghapus data pengguna?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Submit the form when user confirms
+                $('#' + id).submit();
+            }
         });
-    </script>
+    }
+</script>
+
+@if($message = Session::get('success'))
+<script>
+    $(document).ready(function () {
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: "{{ $message }}",
+            showConfirmButton: false,
+            timer: 2000
+        });
+    });
+</script>
 @endif
 @endsection

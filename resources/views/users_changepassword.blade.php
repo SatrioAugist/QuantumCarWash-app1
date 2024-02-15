@@ -21,9 +21,9 @@
         <h3 class="card-title">Ubah Password Pengguna</h3>
       </div>
       <div class="card-body">
-      <a href="{{ route('transactions.index') }}" class="btn btn-secondary">Kembali</a>
+      <a href="{{ route('users.index') }}" class="btn btn-secondary">Kembali</a>
     <br><br>
-      <form action="{{ route('users.change', $users->id) }}" method="POST">
+      <form action="{{ route('users.change', $users->id) }}" method="POST" id="usersChange">
         @csrf
         @method('put')
         <div class="form-group">
@@ -58,7 +58,9 @@
             @enderror
         </div>
 
-        <input type="submit" name="submit" class="btn btn-success" value="Simpan" onclick="return confirm('Konfirmasi Edit Kata Sandi Pengguna !?')">
+        <button type="button" class="btn btn-warning" style="margin-left: 3px;" onclick="confirmSubmit()">
+          Simpan
+        </button>
       </form>
     </div>
       <!-- /.card-body -->
@@ -67,5 +69,25 @@
     <!-- /.card -->
 
   </section>
-  <!-- /.content -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script type="text/javascript">
+    function confirmSubmit() {
+        Swal.fire({
+            title: 'Konfirmasi Dulu!',
+            text: 'Apakah Anda yakin ingin mengubah sandi pengguna?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.value) {
+                // Submit the form when the user confirms
+                document.getElementById('usersChange').submit();
+            }
+        });
+    }
+</script>
 @endsection
+

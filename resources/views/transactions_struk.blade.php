@@ -35,26 +35,27 @@
 
         .item-label {
             display: inline-block;
-            width: 170px; /* Menyesuaikan lebar label item agar titik dua sejajar */
-            text-align: left; /* Menyesuaikan alignment teks pada label */
+            width: 170px; 
+            text-align: left;
         }
-
+        
+        
         .product-list {
             text-align: left;
-            margin: 10px 0;
+            margin: 10px 0 ;
         }
 
         .product-item {
             font-size: 14px;
             margin-bottom: 5px;
             display: inline-block;
-            width: 100%; /* Mengisi lebar penuh agar teks tidak terpotong */
+            width: 100%;
         }
 
         .product-price {
-            text-align: right; /* Menyesuaikan alignment harga agar sejajar dengan titik dua */
-            width: 120px; /* Menyesuaikan lebar harga */
             display: inline-block;
+            width: 170px; 
+            text-align: left; 
         }
 
         
@@ -87,7 +88,6 @@
         <br>
         <h1>Quantum Car Wash</h1>
         <br>
-        <br>
         <div class="receipt-item">
             <span class="item-label">Pelanggan</span> : {{ $tM->nama_pelanggan }}
         </div>
@@ -112,7 +112,8 @@
                     @endphp
 
                     @if(isset($produkName))
-                        <div class="product-item">{{ $counter }}. {{ $produkName->nama_produk }} <span class="product-price">: Rp{{ number_format($produk['total_harga'], 0, ',', '.') }}</span></div>
+                        <div class="product-item">{{ $counter }}. {{ $produkName->nama_produk }}  </div>
+                        <span class="product-price">{{ $produk['qty'] }} x {{ number_format($produkName->harga_produk, 0, ',', '.') }} </span>: Rp {{ number_format($produk['total_harga'], 0, ',', '.') }}
                         @php
                             $counter++; // increment nomor urut
                         @endphp

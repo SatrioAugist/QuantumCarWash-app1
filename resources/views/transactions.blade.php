@@ -18,11 +18,11 @@
 
             <div class="card-body">
                 <div id="success-message" class="alert alert-success" style="display: none;">
-                    <!-- Success message content -->
                 </div>
 
                 @if (in_array(Auth::user()->role, ['kasir']))
-                <a href="{{ route('transactions.create') }}" class="btn btn-outline-success"><i class="mdi mdi-plus"></i>Tambah</a>
+                <a href="{{ route('transactions.create') }}" class="btn btn-outline-success"><i
+                        class="mdi mdi-plus"></i>Tambah</a>
                 <br><br>
                 @endif
                 @if (in_array(Auth::user()->role, ['owner']))
@@ -71,7 +71,7 @@
                                 <th style="text-align: center;">Bayar</th>
                                 <th style="text-align: center;">Kembali</th>
                                 <th style="text-align: center;">Tanggal</th>
-                                @if (in_array(Auth::user()->role, ['kasir','admin']))
+                                @if (in_array(Auth::user()->role, ['kasir','']))
                                 <th style="text-align: center;">Aksi</th>
                                 @endif
                             </tr>
@@ -86,8 +86,8 @@
                                     </td>
                                     <td style="text-align: center;">{{ $trans->nama_pelanggan }}
                                     </td>
-                                    <td style="text-align: center;">
-                                        <ul class="list-item">
+                                    <td style="text-align: left;">
+                                        <ol class="list-item">
                                             @php
                                             $counter = 1; // variabel untuk nomor urut
                                             @endphp
@@ -100,15 +100,15 @@
                                             @php
                                             $totalProduk = $produkName->harga_produk * $produk['qty'];
                                             @endphp
-                                            <li>{{ $counter }}. {{ $produkName->nama_produk }} - {{ $produk['qty'] }} x
-                                                <br> Rp. {{ number_format($totalProduk, 0, ',', '.') }}
+                                            <li>{{ $produkName->nama_produk }} 
+                                                <br>{{ $produk['qty'] }} x {{ number_format($produkName->harga_produk, 0, ',', '.') }}
                                             </li>
                                             @php
                                             $counter++; // increment nomor urut
                                             @endphp
                                             @endif
                                             @endforeach
-                                        </ul>
+                                        </ol>
                                     </td>
 
                                     <td style="text-align: center;">Rp {{
@@ -122,12 +122,12 @@
                                     </td>
                                     <td style="text-align: center;">{{ $trans->created_at }}
                                     </td>
-                                    @if (in_array(Auth::user()->role, ['kasir','admin']))
+                                    @if (in_array(Auth::user()->role, ['kasir','']))
                                     <td style="text-align: center;">
                                         @endif
                                         @if (in_array(Auth::user()->role, ['kasir']))
                                         <a href="{{ url('transactions/struk', $trans->id) }}"
-                                            class="btn btn-outline-primary btn-xs" title="unduh"
+                                            class="btn btn-outline-primary btn-xs" title="print struk"
                                             style="border-radius: 10px; margin-right: 5px;">
                                             <i class="mdi mdi-cloud-print"></i>
                                         </a>
@@ -135,23 +135,44 @@
                                         @if (in_array(Auth::user()->role, ['']))
                                         <div class="btn-group">
                                             <a href="{{ route('transactions.edit',$trans->id)}}"
-                                            class="btn btn-outline-warning btn-xs"
-                                            style="border-radius: 10px; margin-right: 5px;">
-                                            <i class="mdi mdi-pencil"></i>
-                                        </a>
-                                        @endif
-                                        @if (in_array(Auth::user()->role, ['admin']))
-
+                                                class="btn btn-outline-warning btn-xs"
+                                                style="border-radius: 10px; margin-right: 5px;">
+                                                <i class="mdi mdi-pencil"></i>
+                                            </a>
+                                            @endif
+                                            @if (in_array(Auth::user()->role, ['']))
                                             <form action="{{ route('transactions.destroy', $trans->id) }}" method="POST"
                                                 style="display: inline;">
                                                 @csrf
                                                 @method('delete')
-                                                <button type="submit" class="btn btn-outline-danger btn-xs"
+                                                <button type="button" class="btn btn-outline-danger btn-xs"
                                                     title="Hapus" style="border-radius: 10px; margin-left: 5px;"
-                                                    onclick="return confirm('Konfirmasi Hapus Data !?')">
+                                                    onclick="confirmDelete()">
                                                     <i class="mdi mdi-delete-forever"></i>
                                                 </button>
                                             </form>
+
+                                                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                                                <script type="text/javascript">
+                                                    function confirmDelete() {
+                                                        Swal.fire({
+                                                            title: 'Konfirmasi Dulu!',
+                                                            text: 'Apakah Anda yakin ingin menghapus transaksi?',
+                                                            icon: 'warning',
+                                                            showCancelButton: true,
+                                                            confirmButtonColor: '#d33',
+                                                            cancelButtonColor: '#3085d6',
+                                                            confirmButtonText: 'Ya',
+                                                            cancelButtonText: 'Batal'
+                                                        }).then((result) => {
+                                                            if (result.isConfirmed) {
+                                                                // Submit the form when user confirms
+                                                                $('form').submit();
+                                                            }
+                                                        });
+                                                    }
+                                                </script>
+
                                         </div>
                                     </td>
                                     @endif
@@ -193,11 +214,17 @@
 <script type="text/javascript">
     let table = new DataTable('#myTableT');
 </script>
+
 @if($message = Session::get('success'))
 <script>
-    // Display the success message
     $(document).ready(function () {
-        $("#success-message").html("{{ $message }}").fadeIn().delay(3000).fadeOut(); // 3000 milliseconds (3 seconds)
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: "{{ $message }}",
+            showConfirmButton: false,
+            timer: 2000
+        });
     });
 </script>
 @endif

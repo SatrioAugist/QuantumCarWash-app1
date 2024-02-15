@@ -23,7 +23,7 @@
       <a href="{{ route('users.index') }}" class="btn btn-secondary">Kembali</a>
       <br><br>
 
-      <form action="{{ route('users.update', $data->id) }}" method="POST">
+      <form action="{{ route('users.update', $data->id) }}" method="POST" id="usersEdit">
         @csrf
         @method('put')
         <div class="form-group">
@@ -55,10 +55,9 @@
           @enderror
         </div>
 
-        <button type="submit" class="btn btn-warning" style="margin-left: 3px;"
-          onclick="return confirm('Konfirmasi Edit Pengguna!?')">
-          Simpan
-        </button>
+          <button type="button" class="btn btn-warning" style="margin-left: 3px;" onclick="confirmSubmit()">
+            Simpan
+          </button>
       </form>
     </div>
     <!-- /.card-body -->
@@ -67,5 +66,25 @@
   <!-- /.card -->
 
 </section>
-<!-- /.content -->
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script type="text/javascript">
+    function confirmSubmit() {
+        Swal.fire({
+            title: 'Konfirmasi Dulu!',
+            text: 'Apakah Anda yakin ingin mengedit data pengguna?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.value) {
+                // Submit the form when the user confirms
+                document.getElementById('usersEdit').submit();
+            }
+        });
+    }
+</script>
 @endsection

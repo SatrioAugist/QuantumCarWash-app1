@@ -19,7 +19,7 @@
         <a href="{{ route('transactions.index') }}" class="btn btn-secondary">Kembali</a>
         <br><br>
 
-        <form action="{{ route('transactions.store') }}" method="POST">
+        <form action="{{ route('transactions.store') }}" method="POST" id="transactionForm">
             @csrf
 
             <div class="form-group">
@@ -91,10 +91,8 @@
                 @enderror
             </div>
 
-            <!-- Tampilkan Total Harga -->
-
             <button type="submit" class="btn btn-success" style="margin-left: 3px;"
-                onclick="return confirm('Konfirmasi Tambah Transaksi !?')">
+                onclick="confirmTransaction()">
                 Tambah
             </button>
         </form>
@@ -103,40 +101,67 @@
 
 </div>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-<script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script type="text/javascript">
+    function confirmTransaction() {
+        Swal.fire({
+            title: 'Konfirmasi Dulu!',
+            text: 'Apakah Anda yakin ingin menambahkan transaksi?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Trigger the form submission
+                $('#transactionForm').submit();
+            }
+        });
+    }
+
+    // Attach the confirmTransaction function to the button click event
     $(document).ready(function () {
-        // Get the select element and options
-        var select = $('#products');
-        var options = select.find('option');
+        $('.btn-success').on('click', function (e) {
+            e.preventDefault(); // Prevent the default form submission
+            confirmTransaction(); // Call the custom confirmation function
+        });
+    });
+</script>
 
-        // Get the search input element
-        var searchInput = $('#searchInput');
+    <script>
+        $(document).ready(function () {
+            // Get the select element and options
+            var select = $('#products');
+            var options = select.find('option');
 
-        // Add input event listener to the search input
-        searchInput.on('input', function () {
-            var searchQuery = $(this).val().toLowerCase();
+            // Get the search input element
+            var searchInput = $('#searchInput');
 
-            // Filter options based on the search query
-            var filteredOptions = options.filter(function () {
-                var optionText = $(this).text().toLowerCase();
-                return optionText.indexOf(searchQuery) > -1;
+            // Add input event listener to the search input
+            searchInput.on('input', function () {
+                var searchQuery = $(this).val().toLowerCase();
+
+                // Filter options based on the search query
+                var filteredOptions = options.filter(function () {
+                    var optionText = $(this).text().toLowerCase();
+                    return optionText.indexOf(searchQuery) > -1;
+                });
+
+                // Update the select element with filtered options
+                select.html(filteredOptions);
             });
-
-            // Update the select element with filtered options
-            select.html(filteredOptions);
         });
-    });
-</script>
-<script>
-    $(document).ready(function () {
-        $('.select2').select2({
-            placeholder: 'Pilih Produk',
-            allowClear: true
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('.select2').select2({
+                placeholder: 'Pilih Produk',
+                allowClear: true
+            });
         });
-    });
-</script>
+    </script>
 <script>
     function addRow() {
         var selectedProduk = $('#id_produk option:selected');
@@ -190,10 +215,4 @@
         updateTotalHarga();
     });
 </script>
-
-
-
-
-<!-- /.card -->
-<!-- /.content -->
 @endsection

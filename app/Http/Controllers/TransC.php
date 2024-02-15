@@ -98,15 +98,16 @@ class TransC extends Controller
         if (array_key_exists($index, $qtys)) {
             $qty = $qtys[$index];
 
-            $products = PaketM::find($paket);
+            // Store a copy of the product information instead of fetching dynamically
+            $productInfo = PaketM::find($paket);
 
-            if ($products) {
+            if ($productInfo) {
                 $preparedProduk[] = [
-                    'id' => $products->id,
+                    'id' => $productInfo->id,
                     'paket' => $paket,
-                    'nama_produk' => $products->nama_produk,
+                    'nama_produk' => $productInfo->nama_produk,
                     'qty' => $qty,
-                    'total_harga' => $qty * $products->harga_produk,
+                    'total_harga' => $qty * $productInfo->harga_produk,
                 ];
             }
         } else {
@@ -117,6 +118,7 @@ class TransC extends Controller
 
     return $preparedProduk;
 }
+
 
 
     /**
@@ -208,9 +210,9 @@ class TransC extends Controller
             'activity' => "User Menghapus Transaksi"
         ]);
         TransM::where('id', $id)->delete();
-        return redirect()->route('transactions.index')->with('success', 'berhasil dihapus');
+        return redirect()->route('transactions.index')->with('success', 'Transaksi Berhasil Dihapus');
     }
-
+    
     public function struk(String $id)
     {
         $LogM = LogM::create([

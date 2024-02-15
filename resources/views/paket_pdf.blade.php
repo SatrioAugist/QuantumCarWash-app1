@@ -96,7 +96,7 @@
 
     <div class="summary">
         <h2>Ringkasan</h2>
-        <p>Jumlah Paket: {{ \App\Models\PaketM::count() }}</p>
+        <p>Jumlah Paket Yang Tersedia: {{ \App\Models\PaketM::count() }}</p>
     </div>
 
     <div class="footer">

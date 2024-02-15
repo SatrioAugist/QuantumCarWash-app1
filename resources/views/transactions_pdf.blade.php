@@ -95,7 +95,7 @@
                 <td style="text-align: center;">{{ $trans->nomor_unik }}</td>
                 <td style="text-align: center;">{{ $trans->nomor_polisi }}</td>
                 <td style="text-align: center;">{{ $trans->nama_pelanggan }}</td>
-                <td>
+                <td style="text-align: left;">
                       
                             @if(isset($trans->id_produk) && is_array($trans->id_produk))
                                 @php $counter = 1; @endphp

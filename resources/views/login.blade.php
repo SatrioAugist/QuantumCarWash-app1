@@ -27,6 +27,10 @@
                 <div class="brand-logo">
                   <img src="/images/logo_qcw.png">
                 </div>
+                <div class="text-left"> <!-- Tambahkan class text-left untuk membuat teks berada di sebelah kiri -->
+                  <h4 >Hai, Selamat Datang!</h4>
+                  <h6 class="font-weight-light">Silahkan Login Terlebih Dahulu</h6>
+                </div> 
                 @if(session('success'))
                   <p class="alert alert-success">{{ session('success') }}</p>
                 @endif
@@ -35,10 +39,6 @@
                     <p class="alert alert-danger">{{ $err }}</p>
                   @endforeach
                 @endif
-                <div class="text-left"> <!-- Tambahkan class text-left untuk membuat teks berada di sebelah kiri -->
-                  <h4 >Hai, Selamat Datang!</h4>
-                  <h6 class="font-weight-light">Silahkan Login Terlebih Dahulu</h6>
-                </div>
                 <form class="pt-3" action="{{route('login.action')}}" method="post">
                   @csrf
                   <div class="form-group">

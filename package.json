@@ -10,12 +10,13 @@
         "production": "mix --production"
     },
     "devDependencies": {
-        "axios": "^0.25",
+        "axios": "^1.6.7",
         "laravel-mix": "^6.0.6",
         "lodash": "^4.17.19",
         "postcss": "^8.1.14"
     },
     "dependencies": {
-        "datatables.net-dt": "^1.13.8"
+        "datatables.net-dt": "^1.13.8",
+        "sweetalert2": "^11.10.5"
     }
 }
